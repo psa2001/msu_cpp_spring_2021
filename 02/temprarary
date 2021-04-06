@@ -1,0 +1,104 @@
+#include <iostream>
+#include <functional>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+#include <vector>
+#include <cctype>
+
+void empty_for_line(std::vector <std::string>){return;};
+void empty_for_word(std::string){return;};
+
+class ParserFunc{
+public:
+    
+    
+    std::function<void(std::vector <std::string>)> start_callback = empty_for_line;
+    std::function<void(std::vector <std::string>)> end_callback = empty_for_line;
+    std::function<void(std::string)> digital_callback = empty_for_word;
+    std::function<void(std::string)> symb_callback = empty_for_word;
+
+    
+};
+
+class TokenParser
+{
+private:
+    ParserFunc all_func;
+public:
+    TokenParser() = default;
+    void AnalyzeLine(const std::string& text){
+        int first = 0;
+        int last = -1;
+        std::vector <std::string> separate_words;
+        int i;
+        while(isspace(text[first])){
+            ++first;
+        }
+        for(i = first; i < text.length(); ++i){
+            if(std::isspace(text[i])){
+                last = i;
+                if(!std::isspace(text[i - 1])){
+                    std::string cur_word = text.substr(first, last - first);
+                    separate_words.push_back(cur_word);
+                }
+            } else {
+                if (i > 1 && std::isspace(text[i - 1])){
+                    first = i;
+                }
+            }
+        }
+        if (!std::isspace(text[i - 1])){
+            std::string cur_word = text.substr(first, i - 1 - first);
+            separate_words.push_back(cur_word);
+        }
+        all_func.start_callback(separate_words);
+
+        for(int j = 0; j < separate_words.size(); ++j){
+            if(IsNumber(separate_words[j])){
+                all_func.digital_callback(separate_words[j]);
+            } else {
+                all_func.symb_callback(separate_words[j]);
+            }
+        }
+        all_func.end_callback(separate_words);
+    };
+
+    // Устанавливаем callback-функцию перед стартом парсинга.
+    void SetStartCallback(std::function<void(std::vector <std::string>)>& func){
+        all_func.start_callback = func;
+    };
+
+    // Устанавливаем callback-функцию после окончания парсинга.
+    void SetEndCallback(std::function<void(std::vector <std::string>)>& func){
+        all_func.end_callback = func;
+    };
+
+    // Устанавливаем callback-функцию для обработки чисел.
+    void SetDigitTokenCallback(std::function<void(std::string)>&& func){
+        all_func.digital_callback = func;
+    };
+
+    // Тут другие методы для установки callback-функций.
+    void SetWordTokenCallback(std::function<void(std::string)>&& func){
+        all_func.symb_callback = func;
+    };
+
+    int IsNumber(std::string s){
+        std::string::const_iterator it = s.begin();
+        while (it != s.end() && std::isdigit(*it)) ++it;
+        return !s.empty() && it == s.end();
+    };
+};
+ 
+
+void print_digit(std::string s){
+    std::cout << s << std::endl;
+}
+
+int main(){
+    TokenParser a;
+    a.SetDigitTokenCallback(print_digit);
+    a.AnalyzeLine("123 3    2           23 wefd 3 \n 23");
+}
