@@ -6,6 +6,7 @@ void Allocator::makeAllocator(size_t maxSize){
     }
     if(maxSize == 0){
         arr = nullptr;
+        arr_size = maxSize;
     } else {
         arr = new char [maxSize];
         arr_size = maxSize;
