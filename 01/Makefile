@@ -18,4 +18,4 @@ test.o: test.cpp
 	$(CC) $(FLAGS) test.cpp -c
 
 clean:
-	rm -f *.o main
+	rm -f *.o main test
