@@ -1,16 +1,15 @@
 #include "allocator.hpp"
 
 void Allocator::makeAllocator(size_t maxSize){
+    arr_size = maxSize;
+    offset = 0;
     if(arr != nullptr){
         delete []arr;  
     }
     if(maxSize == 0){
         arr = nullptr;
-        arr_size = maxSize;
     } else {
         arr = new char [maxSize];
-        arr_size = maxSize;
-        offset = 0;
     }
 }
 
