@@ -6,9 +6,9 @@
 class Allocator
 {
 private:
-    size_t offset;
+    size_t offset = 0;
     char* arr = nullptr;
-    size_t arr_size;
+    size_t arr_size = 0;
 public:
     Allocator() = default;
     void makeAllocator(size_t maxSize);

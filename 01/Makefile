@@ -10,10 +10,12 @@ main.o: main.cpp
 allocator.o: allocator.hpp allocator.cpp
 	$(CC) $(FLAGS) allocator.cpp -c
 
-test: test.o
+test: test.o allocator.o
+	$(CC) $(FLAGS) test.o allocator.o -o test
+	./test
+
+test.o: test.cpp 
 	$(CC) $(FLAGS) test.cpp -c
-
-
 
 clean:
 	rm -f *.o main
