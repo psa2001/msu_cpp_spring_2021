@@ -76,6 +76,12 @@ void AllocBeforeMake(){
     assert(cur_point == nullptr);
 }
 
+void MakeAllocatorZero(){
+    Allocator allocator;
+    allocator.makeAllocator(0);
+    char* cur_point = allocator.alloc(1);
+    assert(cur_point == nullptr);
+}
 
 int main(){
     CheckNullptr1();
@@ -86,5 +92,6 @@ int main(){
     ManyMakeAllocator();
     BoundaryCaseReset();
     AllocBeforeMake();
+    MakeAllocatorZero();
     return 0;
 }
